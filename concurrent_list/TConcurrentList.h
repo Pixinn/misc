@@ -6,6 +6,7 @@
 #include <condition_variable>
 
 //! \brief A templated *thread-safe* collecttion based on list
+//!
 //!        pop_front() waits for the notification of a filling method if the list is empty.
 //!        The various "emplace" operations are factorized by using the generic "addData_protected".
 //!        This generic asks for a concrete operation to use, which can be passed as a lambda.
@@ -34,6 +35,7 @@ public:
     }
 
     //! \brief Returns the front element and removes it from the collection
+    //!
     //!        No exception is ever returned as we garanty that the list is not empty
     //!        before trying to return data.
     T pop_front( void ) noexcept
@@ -46,7 +48,7 @@ public:
         _list.pop_front();
         return elem;
     }
-    
+
 
 
 private:
@@ -63,9 +65,9 @@ private:
         _condNewData.notify_one();
     }
 
-    std::list<T> _list;                     //! Concrete, not thread safe, storage.
-    std::mutex   _mutex;                    //! Mutex protecting the concrete storage
-    std::condition_variable _condNewData;   //! Condition used to notify that new data are available.
+    std::list<T> _list;                     ///< Concrete, not thread safe, storage.
+    std::mutex   _mutex;                    ///< Mutex protecting the concrete storage
+    std::condition_variable _condNewData;   ///< Condition used to notify that new data are available.
 };
 
 
