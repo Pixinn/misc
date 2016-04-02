@@ -1,0 +1,10 @@
+*.pro
+*.pro.user
+*.sdf
+*.sln
+*.suo
+*.vcxproj.*
+**/Debug
+**/Release
+**/.DS_Store
+projects/
