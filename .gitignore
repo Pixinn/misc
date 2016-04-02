@@ -6,5 +6,7 @@
 *.vcxproj.*
 **/Debug
 **/Release
+**/html
+**/doc
 **/.DS_Store
 projects/
