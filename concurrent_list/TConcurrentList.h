@@ -24,9 +24,9 @@
 #include <mutex>
 #include <condition_variable>
 
-//! \brief A templated *thread-safe* collecttion based on list
+//! \brief A templated *thread-safe* collection based on dequeue
 //!
-//!        pop_front() waits for the notification of a filling method if the list is empty.
+//!        pop_front() waits for the notification of a filling method if the collection is empty.
 //!        The various "emplace" operations are factorized by using the generic "addData_protected".
 //!        This generic asks for a concrete operation to use, which can be passed as a lambda.
 template< typename T >
@@ -40,7 +40,7 @@ public:
     void emplace_front( Args&&... args )
     {
         addData_protected( [&] {
-            _list.emplace_front(std::forward<Args>(args)...);
+            _collection.emplace_front(std::forward<Args>(args)...);
         } );
     }
 
@@ -49,7 +49,7 @@ public:
     void emplace_back( Args&&... args )
     {
         addData_protected( [&] {
-            _list.emplace_back(std::forward<Args>(args)...);
+            _collection.emplace_back(std::forward<Args>(args)...);
         } );
     }
 
@@ -60,11 +60,11 @@ public:
     T pop_front( void ) noexcept
     {
         std::unique_lock<std::mutex> lock{_mutex};
-        while (_list.empty()) {
+        while (_collection.empty()) {
             _condNewData.wait(lock);
         }
-        auto elem = std::move(_list.front());
-        _list.pop_front();
+        auto elem = std::move(_collection.front());
+        _collection.pop_front();
         return elem;
     }
 
@@ -84,7 +84,7 @@ private:
         _condNewData.notify_one();
     }
 
-    std::deque<T> _list;                     ///< Concrete, not thread safe, storage.
+    std::deque<T> _collection;                     ///< Concrete, not thread safe, storage.
     std::mutex   _mutex;                    ///< Mutex protecting the concrete storage
     std::condition_variable _condNewData;   ///< Condition used to notify that new data are available.
 };
