@@ -17,8 +17,8 @@
 
 
 
-#ifndef CONCURRENT_QUEUE_H
-#define CONCURRENT_QUEUE_H
+#ifndef CONCURRENT_DEQUE_H
+#define CONCURRENT_DEQUE_H
 
 #include <deque>
 #include <mutex>
@@ -30,12 +30,12 @@
 //!        The various "emplace" operations are factorized by using the generic "addData_protected".
 //!        This generic asks for a concrete operation to use, which can be passed as a lambda.
 template< typename T >
-class TListConcurrent {
+class TDequeConcurrent {
 
     using const_iterator = typename std::deque<T>::const_iterator;
 
 public:
-    //! \brief Emplaces a new instance of T in front of the list
+    //! \brief Emplaces a new instance of T in front of the deque
     template<typename... Args>
     void emplace_front( Args&&... args )
     {
@@ -44,7 +44,7 @@ public:
         } );
     }
 
-    //! \brief Emplaces a new instance of T at the back of the list
+    //! \brief Emplaces a new instance of T at the back of the deque
     template<typename... Args>
     void emplace_back( Args&&... args )
     {
@@ -55,7 +55,7 @@ public:
 
     //! \brief Returns the front element and removes it from the collection
     //!
-    //!        No exception is ever returned as we garanty that the list is not empty
+    //!        No exception is ever returned as we garanty that the deque is not empty
     //!        before trying to return data.
     T pop_front( void ) noexcept
     {
@@ -72,8 +72,8 @@ public:
 
 private:
 
-    //! \brief Protects the list, calls the provided function and notifies the presence of new data
-    //! \param The concrete operation to be used. It MUST be an operation which will add data to the list,
+    //! \brief Protects the deque, calls the provided function and notifies the presence of new data
+    //! \param The concrete operation to be used. It MUST be an operation which will add data to the deque,
     //!        as it will notify that new data are available!
     template<class F>
     void addData_protected(F&& fct)
@@ -84,10 +84,10 @@ private:
         _condNewData.notify_one();
     }
 
-    std::deque<T> _collection;                     ///< Concrete, not thread safe, storage.
-    std::mutex   _mutex;                    ///< Mutex protecting the concrete storage
+    std::deque<T> _collection;              ///< Concrete, not thread safe, storage.
+    std::mutex    _mutex;                   ///< Mutex protecting the concrete storage
     std::condition_variable _condNewData;   ///< Condition used to notify that new data are available.
 };
 
 
-#endif // CONCURRENT_QUEUE_H
+#endif // CONCURRENT_DEQUE_H
