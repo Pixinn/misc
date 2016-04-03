@@ -20,7 +20,7 @@
 #ifndef CONCURRENT_QUEUE_H
 #define CONCURRENT_QUEUE_H
 
-#include <list>
+#include <deque>
 #include <mutex>
 #include <condition_variable>
 
@@ -32,7 +32,7 @@
 template< typename T >
 class TListConcurrent {
 
-    using const_iterator = typename std::list<T>::const_iterator;
+    using const_iterator = typename std::deque<T>::const_iterator;
 
 public:
     //! \brief Emplaces a new instance of T in front of the list
@@ -84,7 +84,7 @@ private:
         _condNewData.notify_one();
     }
 
-    std::list<T> _list;                     ///< Concrete, not thread safe, storage.
+    std::deque<T> _list;                     ///< Concrete, not thread safe, storage.
     std::mutex   _mutex;                    ///< Mutex protecting the concrete storage
     std::condition_variable _condNewData;   ///< Condition used to notify that new data are available.
 };

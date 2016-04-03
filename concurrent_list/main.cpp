@@ -29,7 +29,7 @@ mutex m;
 int main(int, char **)
 {
     TListConcurrent< string > list;
-    const unsigned NB_MESSAGE = 1000u;
+    constexpr unsigned NB_MESSAGE = 1000u;
 
     //Consuming thread
     thread consumer([&list, NB_MESSAGE]
