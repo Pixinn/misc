@@ -45,7 +45,7 @@ public:
 		_processor(_data);
 	}
 private:
-	 const TDATA _data;							//!< Data carried by the message
+	 const TDATA _data;								//!< Data carried by the message
 	 std::function<void(const TDATA&)>  _processor; //!< Function processing the data
 };
 
