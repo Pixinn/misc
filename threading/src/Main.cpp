@@ -32,10 +32,12 @@ int main(int, char**)
 		msg.number = 0;
 		pinger.send(std::move(msg));
 
-		std::this_thread::sleep_for(20s);
-
+		std::this_thread::sleep_for(3s);
 		pinger.stop();
 		ponger.stop();
+
+		//logger is slower: it needs more time to process its messages
+		std::this_thread::sleep_for(15s);
 		logger.stop();
 		pinger.join();
 		ponger.join();
