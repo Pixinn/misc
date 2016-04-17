@@ -24,10 +24,15 @@
 #include <atomic>
 #include <functional>
 #include <exception>
+#include <thread>
 
 #include "TMessage.h"
 #include "TDequeConcurrent.h"
 
+typedef enum{
+    SYNC,
+    ASYNC
+} eSync;
 
 //CLASS
 //! \brief Base class for a thread
@@ -62,19 +67,23 @@ private:
 	//! \brief Processing the STOP message sent by stop()
 	void process(STOP) noexcept;
 
-	std::thread _mailbox;					//!< Handle on the running thread waiting for messages
-	std::atomic<bool> _isRunning = false;	//!< Is the thread running?
-	std::atomic<bool> _hasToStop = false;	//!< Asks the thread to stop
+    std::thread _mailbox;			//!< Handle on the running thread waiting for messages
+    std::atomic<bool> _isRunning;	//!< Is the thread running?
+    std::atomic<bool> _hasToStop;	//!< Asks the thread to stop
 };
 
 
 //MACRO
 #define I_AM_A_THREAD 	\
 template<typename TDATA> \
-void send(TDATA&& data) { \
-	_messages.emplace_back(new TMessage<TDATA>(std::forward<TDATA>(data), [this](const TDATA& msg) { \
-		process(msg); \
-	})); \
+void send( TDATA&& data, eSync sync = ASYNC ) { \
+    if( sync == ASYNC ) { \
+        _messages.emplace_back(new TMessage<TDATA>(std::forward<TDATA>(data), [this](const TDATA& msg) { \
+            process(msg); \
+        })); \
+    } else { \
+        process(data); \
+    } \
 }
  
 #endif // !ATHREAD_H_

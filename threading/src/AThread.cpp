@@ -20,7 +20,8 @@
 
 using namespace std;
 
-AThread::AThread(void)
+AThread::AThread(void) :
+    _isRunning(false), _hasToStop(false)
 {	}
 
 AThread::~AThread(void) noexcept
