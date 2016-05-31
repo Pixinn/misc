@@ -32,8 +32,6 @@
 template< typename T >
 class TDequeConcurrent {
 
-    using const_iterator = typename std::deque<T>::const_iterator;
-
 public:
     //! \brief Emplaces a new instance of T in front of the deque
     template<typename... Args>
